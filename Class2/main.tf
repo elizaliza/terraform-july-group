@@ -16,12 +16,12 @@ data "aws_ami" "ubuntu" {
 
 
 resource "aws_instance" "web" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro"
-  availability_zone = "us-east-1a"
+  ami                    = data.aws_ami.ubuntu.id
+  user_data              = file("apache.sh") ## we can provide just the name of the file if it is inside your workspace, other wise we need to spcify the full path for the file
+  instance_type          = "t2.micro"
+  availability_zone      = "us-east-1a"
   vpc_security_group_ids = [aws_security_group.allow_tls.id]
-  
-  tags = {
-    Name = "HelloWorld"
-  }
+  key_name               = aws_key_pair.deployer.key_name
+
+  tags = local.common_tags
 }
